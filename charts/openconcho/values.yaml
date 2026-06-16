@@ -53,6 +53,7 @@ securityContext:
 # Directories mounted as ephemeral tmpfs (in-memory) to satisfy nginx's write requirements
 # when the root filesystem is read-only. Add entries for any additional writable paths.
 tmpfsMounts:
+  - mountPath: /etc/nginx/conf.d
   - mountPath: /var/cache/nginx
   - mountPath: /var/run
   - mountPath: /tmp

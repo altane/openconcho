@@ -3,11 +3,11 @@
 # Lets one prebuilt image target any Honcho backend without a rebuild.
 #   OPENCONCHO_DEFAULT_HONCHO_URL — absolute URL seeding the first instance, or empty.
 #   OPENCONCHO_UPSTREAM_ALLOWLIST — optional comma-separated host globs (SSRF guard).
-# Runs from /docker-entrypoint.d before nginx starts. Requires the html dir to
-# be writable (default); skip or bind-mount config.js when running --read-only.
+# Runs from /docker-entrypoint.d before nginx starts. Writes config.js to /tmp
+# so the container works cleanly under a read-only root filesystem.
 set -eu
 
-cat > /usr/share/nginx/html/config.js <<EOF
+cat > /tmp/openconcho-config.js <<EOF
 window.__OPENCONCHO_DEFAULT_HONCHO_URL__ = "${OPENCONCHO_DEFAULT_HONCHO_URL:-}";
 EOF
 
