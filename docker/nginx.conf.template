@@ -39,7 +39,7 @@ server {
     # Runtime config — regenerated per container start, must never be cached.
     location = /config.js {
         add_header Cache-Control "no-cache, no-store, must-revalidate";
-        try_files $uri =404;
+        alias /tmp/openconcho-config.js;
     }
 
     # Long-cache static assets — Vite hashes filenames so they're immutable.
