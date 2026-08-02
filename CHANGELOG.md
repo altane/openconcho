@@ -1,3 +1,10 @@
+## [0.16.1](https://github.com/offendingcommit/openconcho/compare/v0.16.0...v0.16.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **docker:** fix Nginx path [#66](https://github.com/offendingcommit/openconcho/issues/66) ([30e5812](https://github.com/offendingcommit/openconcho/commit/30e581232e26447d9547c4115d0aed386cfd491c))
+
 # [0.16.0](https://github.com/offendingcommit/openconcho/compare/v0.15.0...v0.16.0) (2026-06-10)
 
 
