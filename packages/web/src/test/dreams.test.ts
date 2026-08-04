@@ -115,20 +115,27 @@ describe("clusterConclusionsIntoDreams", () => {
 		expect(dreams[0].latestMs).toBeGreaterThan(dreams[1].latestMs);
 	});
 
-	it("computes counts by inferred conclusion_type, defaulting unknown to explicit", () => {
+	it("computes counts by inferred level, defaulting unknown to explicit", () => {
 		const conclusions = [
 			mkConclusion("c1", iso(0)),
-			mkConclusion("c2", iso(2), { conclusion_type: "deductive" }),
-			mkConclusion("c3", iso(4), { conclusion_type: "deductive" }),
-			mkConclusion("c4", iso(6), { conclusion_type: "inductive" }),
+			mkConclusion("c2", iso(2), { level: "deductive" }),
+			mkConclusion("c3", iso(4), { level: "deductive" }),
+			mkConclusion("c4", iso(6), { level: "inductive" }),
 		];
 		const [dream] = clusterConclusionsIntoDreams(conclusions);
 		expect(dreamCounts(dream)).toEqual({
-			explicit: 1, // c1 has no type → defaults to explicit
+			explicit: 1, // c1 has no level → defaults to explicit
 			deductive: 2,
 			inductive: 1,
+			contradiction: 0,
 			total: 4,
 		});
+	});
+
+	it("counts a level this client does not know as explicit rather than dropping it", () => {
+		const conclusions = [mkConclusion("c1", iso(0), { level: "abductive" })];
+		const [dream] = clusterConclusionsIntoDreams(conclusions);
+		expect(dreamCounts(dream).explicit).toBe(1);
 	});
 });
 
@@ -144,10 +151,10 @@ describe("expandPremiseTree", () => {
 	});
 
 	it("expands a flat premises list to direct children", () => {
-		const p1 = mkConclusion("p1", iso(0), { conclusion_type: "explicit" });
-		const p2 = mkConclusion("p2", iso(1), { conclusion_type: "explicit" });
+		const p1 = mkConclusion("p1", iso(0), { level: "explicit" });
+		const p2 = mkConclusion("p2", iso(1), { level: "explicit" });
 		const top = mkConclusion("top", iso(5), {
-			conclusion_type: "inductive",
+			level: "inductive",
 			premises: ["p1", "p2"],
 		});
 		const index = buildPremiseIndex([p1, p2, top]);
@@ -158,17 +165,17 @@ describe("expandPremiseTree", () => {
 	});
 
 	it("walks a multi-level reasoning_tree recursively", () => {
-		const e1 = mkConclusion("e1", iso(0), { conclusion_type: "explicit" });
-		const e2 = mkConclusion("e2", iso(1), { conclusion_type: "explicit" });
+		const e1 = mkConclusion("e1", iso(0), { level: "explicit" });
+		const e2 = mkConclusion("e2", iso(1), { level: "explicit" });
 		const d1 = mkConclusion("d1", iso(2), {
-			conclusion_type: "deductive",
+			level: "deductive",
 			reasoning_tree: {
 				conclusion_id: "d1",
 				premises: [{ conclusion_id: "e1" }, { conclusion_id: "e2" }],
 			},
 		});
 		const ind = mkConclusion("ind", iso(3), {
-			conclusion_type: "inductive",
+			level: "inductive",
 			reasoning_tree: {
 				conclusion_id: "ind",
 				premises: [{ conclusion_id: "d1" }],

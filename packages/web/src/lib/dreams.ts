@@ -2,20 +2,23 @@ import type { components } from "@/api/schema.d.ts";
 
 type ApiConclusion = components["schemas"]["Conclusion"];
 
-export type ConclusionType = "explicit" | "deductive" | "inductive";
+export type ConclusionType = "explicit" | "deductive" | "inductive" | "contradiction";
 
 export const CONCLUSION_TYPES: readonly ConclusionType[] = [
 	"explicit",
 	"deductive",
 	"inductive",
+	"contradiction",
 ] as const;
 
-// The generated OpenAPI schema does not yet expose `conclusion_type`, `premises`, or
-// `reasoning_tree` (Honcho migration f1a2b3c4d5e6 added the columns but the response
-// schema hasn't been regenerated client-side). We declare them as optional here so
-// the UI consumes them when present and degrades gracefully when absent.
+// The generated OpenAPI schema (Honcho 3.0.5) does not expose `level`, `premises`, or
+// `reasoning_tree`, but live Honcho 3.0.11 returns `level` on every conclusion.
+// Declared optional here so the UI consumes them when present and degrades gracefully
+// when absent. `premises`/`reasoning_tree` are still unserved — the premise tree stays
+// empty until Honcho ships them.
 export type ExtendedConclusion = ApiConclusion & {
-	conclusion_type?: ConclusionType | null;
+	/** Widened to `string`: Honcho may add levels this client doesn't know yet. */
+	level?: string | null;
 	premises?: string[] | null;
 	reasoning_tree?: ReasoningTreeNode | null;
 };
@@ -41,6 +44,7 @@ export interface DreamCounts {
 	explicit: number;
 	deductive: number;
 	inductive: number;
+	contradiction: number;
 	total: number;
 }
 
@@ -52,11 +56,17 @@ export interface ClusterOptions {
 const DEFAULT_GAP_MS = 60_000;
 
 export function inferConclusionType(c: ExtendedConclusion): ConclusionType {
-	return c.conclusion_type ?? "explicit";
+	return CONCLUSION_TYPES.find((t) => t === c.level) ?? "explicit";
 }
 
 export function dreamCounts(dream: Pick<Dream, "conclusions">): DreamCounts {
-	const counts: DreamCounts = { explicit: 0, deductive: 0, inductive: 0, total: 0 };
+	const counts: DreamCounts = {
+		explicit: 0,
+		deductive: 0,
+		inductive: 0,
+		contradiction: 0,
+		total: 0,
+	};
 	for (const c of dream.conclusions) {
 		counts[inferConclusionType(c)]++;
 		counts.total++;

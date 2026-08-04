@@ -157,6 +157,9 @@ function DreamRow({ dream, active, onSelect }: DreamRowProps) {
 					<CountChip label="explicit" value={counts.explicit} kind="neutral" />
 					<CountChip label="deductive" value={counts.deductive} kind="accent" />
 					<CountChip label="inductive" value={counts.inductive} kind="warning" />
+					{counts.contradiction > 0 && (
+						<CountChip label="contradiction" value={counts.contradiction} kind="destructive" />
+					)}
 					<ChevronRight
 						className="w-4 h-4 ml-1 transition-transform"
 						style={{
@@ -177,7 +180,7 @@ function DreamRow({ dream, active, onSelect }: DreamRowProps) {
 	);
 }
 
-type ChipKind = "neutral" | "accent" | "warning";
+type ChipKind = "neutral" | "accent" | "warning" | "destructive";
 
 function CountChip({ label, value, kind }: { label: string; value: number; kind: ChipKind }) {
 	const palette: Record<ChipKind, { bg: string; fg: string; border: string }> = {
@@ -188,6 +191,11 @@ function CountChip({ label, value, kind }: { label: string; value: number; kind:
 		},
 		accent: { bg: COLOR.accentSubtle, fg: COLOR.accentText, border: COLOR.accentBorder },
 		warning: { bg: "rgba(245,158,11,0.10)", fg: COLOR.warning, border: COLOR.warningBorder },
+		destructive: {
+			bg: COLOR.destructiveDim,
+			fg: COLOR.destructive,
+			border: COLOR.destructiveBorder,
+		},
 	};
 	const cfg = palette[kind];
 	const dim = value === 0;
