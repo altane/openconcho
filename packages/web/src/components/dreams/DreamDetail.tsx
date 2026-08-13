@@ -34,6 +34,11 @@ const COLUMNS: Array<{ type: ConclusionType; label: string; description: string 
 		label: "Inductive",
 		description: "Generalized patterns inferred from deductives",
 	},
+	{
+		type: "contradiction",
+		label: "Contradiction",
+		description: "Conflicts found between existing observations",
+	},
 ];
 
 interface DreamDetailProps {
@@ -51,6 +56,7 @@ export function DreamDetail({ dream, onClose }: DreamDetailProps) {
 			explicit: [],
 			deductive: [],
 			inductive: [],
+			contradiction: [],
 		};
 		for (const c of dream.conclusions) {
 			buckets[inferConclusionType(c)].push(c);

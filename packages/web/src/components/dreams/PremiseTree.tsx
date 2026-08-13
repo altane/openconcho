@@ -27,6 +27,12 @@ const TYPE_BADGE: Record<
 		fg: COLOR.warning,
 		border: COLOR.warningBorder,
 	},
+	contradiction: {
+		label: "contradiction",
+		bg: COLOR.destructiveDim,
+		fg: COLOR.destructive,
+		border: COLOR.destructiveBorder,
+	},
 };
 
 export function ConclusionTypeBadge({ type }: { type: ConclusionType }) {
