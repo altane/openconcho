@@ -1,3 +1,10 @@
+## [0.16.2](https://github.com/offendingcommit/openconcho/compare/v0.16.1...v0.16.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* **web:** read conclusion level from the field Honcho actually sends ([5c5b1a4](https://github.com/offendingcommit/openconcho/commit/5c5b1a4ae93553b737d51f945a38ad3362006245))
+
 ## [0.16.1](https://github.com/offendingcommit/openconcho/compare/v0.16.0...v0.16.1) (2026-08-02)
 
 
