@@ -323,7 +323,7 @@ export function useSessions(workspaceId: string, page = 1, pageSize = 20) {
 				{
 					params: {
 						path: { workspace_id: workspaceId },
-						query: { page, page_size: pageSize },
+						query: { page, size: pageSize, reverse: true },
 					},
 					body: {},
 				},
